@@ -28,24 +28,16 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      {/* Conteneur des toasts — fixé en bas à droite */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
         {toasts.map(toast => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all duration-300 ${
-              toast.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+            className={`pointer-events-auto px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-150 ${
+              toast.type === 'success'
+                ? 'bg-gray-900 text-white'
+                : 'bg-red-600 text-white'
             }`}
           >
-            {toast.type === 'success' ? (
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            )}
             {toast.message}
           </div>
         ))}
@@ -54,4 +46,5 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => useContext(ToastContext);

@@ -57,15 +57,17 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative bg-white rounded-lg border border-gray-200 shadow-sm w-full max-w-lg p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
-            {initial ? 'Modifier l\'auteur' : 'Nouvel auteur'}
+          <h2 className="text-xl font-semibold text-gray-900">
+            {initial ? "Modifier l'auteur" : 'Nouvel auteur'}
           </h2>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            onClick={onClose}
+            className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -79,7 +81,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
                 value={form.firstName}
                 onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))}
                 placeholder="Victor"
-                className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.firstName ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150 ${errors.firstName ? 'border-red-400' : 'border-gray-200'}`}
               />
               {errors.firstName && <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>}
             </div>
@@ -89,7 +91,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
                 value={form.lastName}
                 onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))}
                 placeholder="Hugo"
-                className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.lastName ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150 ${errors.lastName ? 'border-red-400' : 'border-gray-200'}`}
               />
               {errors.lastName && <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>}
             </div>
@@ -102,7 +104,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
                 value={form.nationality}
                 onChange={e => setForm(f => ({ ...f, nationality: e.target.value }))}
                 placeholder="Française"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150"
               />
             </div>
             <div>
@@ -111,7 +113,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
                 type="date"
                 value={form.birthDate}
                 onChange={e => setForm(f => ({ ...f, birthDate: e.target.value }))}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150"
               />
             </div>
           </div>
@@ -123,7 +125,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
               onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
               placeholder="Quelques mots sur l'auteur…"
               rows={3}
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150 resize-none"
             />
           </div>
 
@@ -132,14 +134,14 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-150 disabled:opacity-50"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 flex items-center gap-2"
             >
               {loading && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
               {initial ? 'Enregistrer' : 'Créer'}

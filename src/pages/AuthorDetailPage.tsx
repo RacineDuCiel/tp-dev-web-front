@@ -28,18 +28,17 @@ export default function AuthorDetailPage() {
     ])
       .then(([a, allBooks]) => {
         setAuthor(a);
-        // Filtrer les livres dont la liste d'auteurs contient cet auteur
         setBooks(allBooks.filter(b => b.authors.some(au => au.id === Number(id))));
       })
       .catch(() => navigate('/authors'))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, navigate]);
 
   async function handleUpdate(data: AuthorRequest) {
     if (!author) return;
     const updated = await authorService.update(author.id, data);
     setAuthor(updated);
-    addToast(`Auteur "${updated.firstName} ${updated.lastName}" mis à jour`);
+    addToast(`"${updated.firstName} ${updated.lastName}" mis à jour`);
   }
 
   async function handleDelete() {
@@ -47,7 +46,7 @@ export default function AuthorDetailPage() {
     setDeleteLoading(true);
     try {
       await authorService.delete(author.id);
-      addToast(`Auteur "${author.firstName} ${author.lastName}" supprimé`);
+      addToast(`"${author.firstName} ${author.lastName}" supprimé`);
       navigate('/authors');
     } catch {
       addToast('Erreur lors de la suppression', 'error');
@@ -60,118 +59,113 @@ export default function AuthorDetailPage() {
   if (!author) return null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
 
       {/* Fil d'Ariane */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500">
-        <Link to="/authors" className="hover:text-indigo-600 transition-colors">Auteurs</Link>
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <nav className="flex items-center gap-1.5 text-sm text-gray-500">
+        <Link to="/authors" className="hover:text-gray-900 transition-colors duration-150">Auteurs</Link>
+        <svg className="w-3.5 h-3.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-gray-900 font-medium">{author.firstName} {author.lastName}</span>
+        <span className="text-gray-900">{author.firstName} {author.lastName}</span>
       </nav>
 
-      {/* Carte profil */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
-        <div className="h-3 bg-gradient-to-r from-indigo-500 to-purple-500" />
-        <div className="p-8">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-6">
-            {/* Avatar */}
-            <div className="w-20 h-20 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-3xl shrink-0">
+      {/* Fiche auteur */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 font-medium text-base shrink-0">
               {author.firstName[0]}{author.lastName[0]}
             </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h1 className="text-2xl font-bold text-gray-900">{author.firstName} {author.lastName}</h1>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setShowEdit(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-colors"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Modifier
-                  </button>
-                  <button
-                    onClick={() => setShowDelete(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Supprimer
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-3 flex flex-wrap gap-3">
-                {author.nationality && (
-                  <span className="text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                    🌍 {author.nationality}
-                  </span>
-                )}
-                {author.birthDate && (
-                  <span className="text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                    📅 {new Date(author.birthDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </span>
-                )}
-                <span className="text-sm text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 font-medium">
-                  📚 {author.bookCount} livre{author.bookCount !== 1 ? 's' : ''}
-                </span>
-              </div>
-
-              {author.bio && (
-                <p className="mt-4 text-gray-600 leading-relaxed">{author.bio}</p>
-              )}
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">
+                {author.firstName} {author.lastName}
+              </h1>
+              <p className="text-sm text-gray-500 mt-0.5">
+                {author.bookCount} livre{author.bookCount !== 1 ? 's' : ''}
+              </p>
             </div>
           </div>
+          <div className="flex gap-2 shrink-0">
+            <button
+              onClick={() => setShowEdit(true)}
+              className="px-3 py-1.5 text-sm font-medium border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+            >
+              Modifier
+            </button>
+            <button
+              onClick={() => setShowDelete(true)}
+              className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+            >
+              Supprimer
+            </button>
+          </div>
         </div>
+
+        {/* Métadonnées */}
+        <dl className="mt-4 flex flex-wrap gap-6">
+          {author.nationality && (
+            <div>
+              <dt className="text-xs text-gray-400">Nationalité</dt>
+              <dd className="mt-0.5 text-sm text-gray-900">{author.nationality}</dd>
+            </div>
+          )}
+          {author.birthDate && (
+            <div>
+              <dt className="text-xs text-gray-400">Naissance</dt>
+              <dd className="mt-0.5 text-sm text-gray-900">
+                {new Date(author.birthDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </dd>
+            </div>
+          )}
+        </dl>
+
+        {author.bio && (
+          <p className="mt-5 pt-5 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
+            {author.bio}
+          </p>
+        )}
       </div>
 
-      {/* Livres de l'auteur */}
+      {/* Livres */}
       <section>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          Livres de cet auteur
-          <span className="ml-2 text-sm font-normal text-gray-400">({books.length})</span>
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Livres</h2>
+          <span className="text-sm text-gray-500">{books.length}</span>
+        </div>
 
         {books.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 bg-white rounded-2xl border border-gray-100">
-            <p className="font-medium">Aucun livre associé à cet auteur</p>
-            <Link to="/books" className="mt-3 inline-block text-sm text-indigo-600 hover:underline">
-              Aller dans les livres pour en créer un
+          <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
+            <p className="text-sm text-gray-500">Aucun livre associé à cet auteur.</p>
+            <Link
+              to="/books"
+              className="mt-2 inline-block text-sm text-gray-900 underline underline-offset-2 hover:no-underline transition-all"
+            >
+              Aller dans les livres
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {books.map(book => (
               <Link
                 key={book.id}
                 to={`/books/${book.id}`}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-5 group"
+                className="bg-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors duration-150"
               >
-                <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
-                  {book.title}
-                </h3>
-                {book.genre && (
-                  <span className="mt-2 inline-block text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                    {book.genre}
-                  </span>
-                )}
-                {book.publicationDate && (
-                  <p className="mt-2 text-xs text-gray-400">{new Date(book.publicationDate).getFullYear()}</p>
-                )}
+                <h3 className="text-sm font-medium text-gray-900 line-clamp-2">{book.title}</h3>
+                <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+                  {book.genre && <span>{book.genre}</span>}
+                  {book.genre && book.publicationDate && <span className="text-gray-300">·</span>}
+                  {book.publicationDate && (
+                    <span>{new Date(book.publicationDate).getFullYear()}</span>
+                  )}
+                </div>
               </Link>
             ))}
           </div>
         )}
       </section>
 
-      {/* Modals */}
       {showEdit && (
         <AuthorForm initial={author} onSubmit={handleUpdate} onClose={() => setShowEdit(false)} />
       )}

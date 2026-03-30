@@ -39,77 +39,73 @@ export default function IllustrationForm({ bookId, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl border border-dashed border-gray-300 p-5 space-y-4">
-      <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-        <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-        Ajouter une illustration
-      </h4>
+    <div className="border-t border-gray-200 pt-6">
+      <h4 className="text-sm font-medium text-gray-900 mb-4">Ajouter une illustration</h4>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
+            <input
+              value={form.title}
+              onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+              placeholder="Couverture originale"
+              className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150 ${errors.title ? 'border-red-400' : 'border-gray-200'}`}
+            />
+            {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <input
+              value={form.description}
+              onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+              placeholder="Optionnel"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150"
+            />
+          </div>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Titre *</label>
-          <input
-            value={form.title}
-            onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-            placeholder="Couverture originale"
-            className={`w-full px-3 py-2 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.title ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-white'}`}
-          />
-          {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+          <label className="block text-sm font-medium text-gray-700 mb-1">URL de l'image *</label>
+          <div className="flex gap-2">
+            <input
+              value={form.imageUrl}
+              onChange={e => { setForm(f => ({ ...f, imageUrl: e.target.value })); setPreview(false); }}
+              placeholder="https://exemple.com/image.jpg"
+              className={`flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-150 ${errors.imageUrl ? 'border-red-400' : 'border-gray-200'}`}
+            />
+            {form.imageUrl && (
+              <button
+                type="button"
+                onClick={() => setPreview(p => !p)}
+                className="px-3 py-2 text-xs font-medium border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+              >
+                {preview ? 'Masquer' : 'Aperçu'}
+              </button>
+            )}
+          </div>
+          {errors.imageUrl && <p className="mt-1 text-xs text-red-500">{errors.imageUrl}</p>}
         </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
-          <input
-            value={form.description}
-            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-            placeholder="Optionnel"
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+
+        {preview && form.imageUrl && (
+          <img
+            src={form.imageUrl}
+            alt="Aperçu"
+            className="w-full max-h-40 object-contain rounded-lg border border-gray-200 bg-gray-50"
+            onError={() => setPreview(false)}
           />
+        )}
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 flex items-center gap-2"
+          >
+            {loading && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+            Ajouter
+          </button>
         </div>
-      </div>
-
-      <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">URL de l'image *</label>
-        <div className="flex gap-2">
-          <input
-            value={form.imageUrl}
-            onChange={e => { setForm(f => ({ ...f, imageUrl: e.target.value })); setPreview(false); }}
-            placeholder="https://exemple.com/image.jpg"
-            className={`flex-1 px-3 py-2 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.imageUrl ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-white'}`}
-          />
-          {form.imageUrl && (
-            <button
-              type="button"
-              onClick={() => setPreview(p => !p)}
-              className="px-3 py-2 text-xs font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-xl hover:bg-indigo-100 transition-colors"
-            >
-              {preview ? 'Masquer' : 'Aperçu'}
-            </button>
-          )}
-        </div>
-        {errors.imageUrl && <p className="mt-1 text-xs text-red-500">{errors.imageUrl}</p>}
-      </div>
-
-      {preview && form.imageUrl && (
-        <img
-          src={form.imageUrl}
-          alt="Aperçu"
-          className="w-full max-h-40 object-contain rounded-xl border border-gray-200 bg-white"
-          onError={() => setPreview(false)}
-        />
-      )}
-
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-        >
-          {loading && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-          Ajouter
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
