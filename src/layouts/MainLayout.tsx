@@ -1,6 +1,9 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function MainLayout() {
+  const { userName, logout } = useAuth();
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
@@ -50,8 +53,18 @@ export default function MainLayout() {
             </NavLink>
           </nav>
 
-          {/* Espace réservé — bouton Keycloak Phase 3 */}
-          <div className="w-8 shrink-0" />
+          {/* Utilisateur connecté + déconnexion */}
+          <div className="flex items-center gap-3 shrink-0">
+            {userName && (
+              <span className="text-sm text-gray-500 hidden sm:block">{userName}</span>
+            )}
+            <button
+              onClick={logout}
+              className="px-3 py-1.5 text-sm font-medium border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
       </header>
 
