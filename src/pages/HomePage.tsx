@@ -1,3 +1,18 @@
+/**
+ * Page d'accueil — tableau de bord de la bibliothèque.
+ *
+ * Données chargées :
+ * - `Promise.all` charge livres et auteurs en parallèle (une seule attente).
+ * - Ces données ne sont pas mises en cache — rechargées à chaque visite.
+ *
+ * Sections affichées :
+ * 1. **Statistiques** : 3 compteurs cliquables (Livres, Auteurs, Illustrations).
+ *    - `illustrationCount` est calculé côté front en sommant les illustrations de chaque livre.
+ * 2. **Ajouts récents** : les 5 derniers livres ajoutés, déduits de l'ordre de la liste
+ *    (on inverse le tableau car la BDD les renvoie dans l'ordre d'insertion).
+ *
+ * `animate-page-in` : animation de fondu-glissement au montage de la page (défini dans index.css).
+ */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { bookService } from '../services/bookService';
@@ -11,6 +26,10 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  /**
+   * Chargement parallèle des livres et des auteurs.
+   * `Promise.all` attend que les deux requêtes soient terminées avant de mettre à jour l'état.
+   */
   useEffect(() => {
     Promise.all([bookService.getAll(), authorService.getAll()])
       .then(([b, a]) => { setBooks(b); setAuthors(a); })
@@ -19,13 +38,15 @@ export default function HomePage() {
 
   if (loading) return <LoadingSpinner fullPage />;
 
+  // Les 5 livres les plus récents — on inverse l'ordre de la liste (dernier ajouté = premier)
   const recentBooks = [...books].reverse().slice(0, 5);
+  // Nombre total d'illustrations calculé en agrégeant toutes les listes d'illustrations
   const illustrationCount = books.reduce((sum, b) => sum + b.illustrations.length, 0);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+    <div className="animate-page-in max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
 
-      {/* Statistiques */}
+      {/* Statistiques — 3 compteurs navigables */}
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: 'Livres', value: books.length, href: '/books' },
@@ -35,54 +56,57 @@ export default function HomePage() {
           <button
             key={stat.label}
             onClick={() => navigate(stat.href)}
-            className="bg-white border border-gray-200 rounded-lg p-5 text-left hover:border-gray-300 transition-colors duration-150"
+            className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg p-5 text-left hover:border-stone-300 dark:hover:border-stone-600 transition-colors duration-150"
           >
-            <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
-            <p className="mt-0.5 text-sm text-gray-500">{stat.label}</p>
+            <p className="text-2xl font-semibold text-stone-900 dark:text-stone-50">{stat.value}</p>
+            <p className="mt-0.5 text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">{stat.label}</p>
           </button>
         ))}
       </div>
 
-      {/* Ajouts récents */}
+      {/* Ajouts récents — liste des 5 derniers livres */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Ajouts récents</h2>
+          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-50">Ajouts récents</h2>
           <Link
             to="/books"
-            className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-150"
+            className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500 hover:text-stone-900 dark:text-stone-50 transition-colors duration-150"
           >
             Voir tout
           </Link>
         </div>
 
         {recentBooks.length === 0 ? (
+          // État vide — invite à créer un premier livre
           <div className="py-10 text-center">
-            <p className="text-sm text-gray-500">Aucun livre pour l'instant.</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">Aucun livre pour l'instant.</p>
             <Link
               to="/books"
-              className="mt-2 inline-block text-sm text-gray-900 underline underline-offset-2 hover:no-underline transition-all"
+              className="mt-2 inline-block text-sm text-stone-900 dark:text-stone-50 underline underline-offset-2 hover:no-underline transition-all"
             >
               Ajouter un livre
             </Link>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100">
+          // Liste des livres récents — chaque ligne est un lien vers le détail du livre
+          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg divide-y divide-stone-100 dark:divide-stone-800">
             {recentBooks.map(book => (
               <Link
                 key={book.id}
                 to={`/books/${book.id}`}
-                className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 group"
+                className="flex items-center justify-between px-4 py-3 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors duration-150 group"
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{book.title}</p>
+                  <p className="text-sm font-medium text-stone-900 dark:text-stone-50 truncate">{book.title}</p>
                   {book.authors.length > 0 && (
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-stone-500 dark:text-stone-400 dark:text-stone-500 truncate">
                       {book.authors.map(a => `${a.firstName} ${a.lastName}`).join(', ')}
                     </p>
                   )}
                 </div>
+                {/* Genre affiché à droite — masqué si absent */}
                 {book.genre && (
-                  <span className="ml-4 shrink-0 text-xs text-gray-400">{book.genre}</span>
+                  <span className="ml-4 shrink-0 text-xs text-stone-400 dark:text-stone-500">{book.genre}</span>
                 )}
               </Link>
             ))}
