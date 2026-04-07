@@ -75,15 +75,9 @@ export default function HomePage() {
         </div>
 
         {recentBooks.length === 0 ? (
-          // État vide — invite à créer un premier livre
+          // État vide
           <div className="py-10 text-center">
             <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">Aucun livre pour l'instant.</p>
-            <Link
-              to="/books"
-              className="mt-2 inline-block text-sm text-stone-900 dark:text-stone-50 underline underline-offset-2 hover:no-underline transition-all"
-            >
-              Ajouter un livre
-            </Link>
           </div>
         ) : (
           // Liste des livres récents — chaque ligne est un lien vers le détail du livre
