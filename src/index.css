@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+/* Dark mode : activé via la classe .dark sur <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-toast-in { animation: toast-in 200ms ease-out both; }
+.animate-modal-in { animation: modal-in 180ms ease-out both; }
+/* backwards = applique le keyframe "from" avant le démarrage (évite le flash),
+   mais N'applique PAS de transform après la fin — les modaux position:fixed
+   restent relatifs au viewport et non à cet élément. */
+.animate-page-in  { animation: page-in 240ms ease-out backwards; }
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -14,7 +14,7 @@
  * `animate-page-in` : animation de fondu-glissement au montage de la page (défini dans index.css).
  */
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { bookService } from '../services/bookService';
 import { authorService } from '../services/authorService';
 import type { Book, Author } from '../types';
@@ -24,7 +24,6 @@ export default function HomePage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   /**
    * Chargement parallèle des livres et des auteurs.
@@ -46,21 +45,20 @@ export default function HomePage() {
   return (
     <div className="animate-page-in max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
 
-      {/* Statistiques — 3 compteurs navigables */}
+      {/* Statistiques — 3 compteurs informatifs (non cliquables, la navbar suffit) */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Livres', value: books.length, href: '/books' },
-          { label: 'Auteurs', value: authors.length, href: '/authors' },
-          { label: 'Illustrations', value: illustrationCount, href: '/books' },
+          { label: 'Livres',        value: books.length },
+          { label: 'Auteurs',       value: authors.length },
+          { label: 'Illustrations', value: illustrationCount },
         ].map(stat => (
-          <button
+          <div
             key={stat.label}
-            onClick={() => navigate(stat.href)}
-            className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg p-5 text-left hover:border-stone-300 dark:hover:border-stone-600 transition-colors duration-150"
+            className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg p-5"
           >
             <p className="text-2xl font-semibold text-stone-900 dark:text-stone-50">{stat.value}</p>
-            <p className="mt-0.5 text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">{stat.label}</p>
-          </button>
+            <p className="mt-0.5 text-sm text-stone-500 dark:text-stone-400">{stat.label}</p>
+          </div>
         ))}
       </div>
 
