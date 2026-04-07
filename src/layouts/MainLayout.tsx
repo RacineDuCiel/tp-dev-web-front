@@ -2,38 +2,49 @@
  * Layout principal de l'application — enveloppe toutes les pages protégées.
  *
  * Structure :
- * - `<header>` sticky : logo, navigation, toggle dark mode, déconnexion.
+ * - `<header>` sticky : logo, navigation desktop, toggle dark mode, déconnexion.
+ * - Menu mobile : s'ouvre via le bouton burger (visible < 640px), se ferme
+ *   automatiquement au changement de route.
  * - `<main>` : rendu de la page active via `<Outlet />` (React Router).
- *
- * Navigation :
- * - `<NavLink>` applique automatiquement la classe active (fond stone-100 en clair,
- *   stone-800 en sombre) à l'élément correspondant à l'URL courante.
- * - `end` sur la route "/" évite que l'accueil soit actif sur toutes les pages.
- *
- * Dark mode :
- * - `useTheme()` fournit l'état `dark` et la fonction `toggle`.
- * - Le bouton affiche une icône Soleil (si mode sombre) ou Lune (si mode clair).
- * - `aria-label` dynamique pour l'accessibilité clavier / lecteurs d'écran.
- *
- * Authentification :
- * - `useAuth()` fournit `userName` (prénom Keycloak) et `logout`.
- * - Le nom d'utilisateur est masqué sur mobile (`hidden sm:block`).
  */
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../hooks/useTheme';
+import { useState } from 'react';
+
+const NAV_LINKS = [
+  { to: '/',        label: 'Accueil', end: true  },
+  { to: '/books',   label: 'Livres',  end: false },
+  { to: '/authors', label: 'Auteurs', end: false },
+];
 
 export default function MainLayout() {
   const { userName, logout } = useAuth();
   const { dark, toggle } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `px-3 py-1.5 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
+      isActive
+        ? 'text-stone-900 dark:text-stone-50 font-medium bg-stone-100 dark:bg-stone-800'
+        : 'text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 hover:bg-stone-50 dark:hover:bg-stone-800'
+    }`;
+
+  const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `px-3 py-2 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
+      isActive
+        ? 'text-stone-900 dark:text-stone-50 font-medium bg-stone-100 dark:bg-stone-800'
+        : 'text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 hover:bg-stone-50 dark:hover:bg-stone-800'
+    }`;
 
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col transition-colors duration-200">
-      {/* En-tête sticky — reste visible lors du défilement */}
+
+      {/* En-tête sticky */}
       <header className="sticky top-0 z-40 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-6">
 
-          {/* Logo + Nom de l'application */}
+          {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2 shrink-0 cursor-pointer">
             <svg className="w-5 h-5 text-amber-700 dark:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -44,35 +55,18 @@ export default function MainLayout() {
             </span>
           </NavLink>
 
-          {/* Navigation principale */}
-          <nav className="flex items-center gap-1">
-            {[
-              { to: '/', label: 'Accueil', end: true },
-              { to: '/books', label: 'Livres', end: false },
-              { to: '/authors', label: 'Auteurs', end: false },
-            ].map(({ to, label, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `px-3 py-1.5 text-sm rounded-md transition-colors duration-150 cursor-pointer ${
-                    isActive
-                      // Lien actif — fond grisé et texte fort pour indiquer la page courante
-                      ? 'text-stone-900 dark:text-stone-50 font-medium bg-stone-100 dark:bg-stone-800'
-                      // Lien inactif — texte atténué, s'éclaircit au survol
-                      : 'text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 hover:bg-stone-50 dark:hover:bg-stone-800'
-                  }`
-                }
-              >
+          {/* Navigation desktop — masquée sur mobile */}
+          <nav className="hidden sm:flex items-center gap-1">
+            {NAV_LINKS.map(({ to, label, end }) => (
+              <NavLink key={to} to={to} end={end} className={navLinkClass}>
                 {label}
               </NavLink>
             ))}
           </nav>
 
-          {/* Actions droite : toggle dark mode + nom utilisateur + déconnexion */}
+          {/* Actions droite */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Bouton toggle dark mode — icône Soleil si sombre, Lune si clair */}
+            {/* Toggle dark mode */}
             <button
               onClick={toggle}
               aria-label={dark ? 'Passer en mode clair' : 'Passer en mode sombre'}
@@ -80,13 +74,11 @@ export default function MainLayout() {
               className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors duration-150 cursor-pointer"
             >
               {dark ? (
-                /* Icône Soleil — indique qu'on peut revenir en mode clair */
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                 </svg>
               ) : (
-                /* Icône Lune — indique qu'on peut passer en mode sombre */
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -94,25 +86,64 @@ export default function MainLayout() {
               )}
             </button>
 
-            {/* Séparateur vertical */}
-            <div className="w-px h-4 bg-stone-200 dark:bg-stone-700" />
-
-            {/* Nom de l'utilisateur connecté (prénom extrait du token JWT Keycloak) */}
+            {/* Séparateur + nom utilisateur (desktop uniquement) */}
+            <div className="hidden sm:block w-px h-4 bg-stone-200 dark:bg-stone-700" />
             {userName && (
-              <span className="text-sm text-stone-400 dark:text-stone-500 hidden sm:block">{userName}</span>
+              <span className="hidden sm:block text-sm text-stone-400 dark:text-stone-500">{userName}</span>
             )}
-            {/* Bouton de déconnexion — appelle keycloak.logout() via AuthContext */}
+
+            {/* Déconnexion — masqué sur mobile (accessible via menu burger) */}
             <button
               onClick={logout}
-              className="px-3 py-1.5 text-sm font-medium border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors duration-150 cursor-pointer active:scale-95"
+              className="hidden sm:block px-3 py-1.5 text-sm font-medium border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors duration-150 cursor-pointer active:scale-95"
+            >
+              Déconnexion
+            </button>
+
+            {/* Bouton burger — visible uniquement sur mobile */}
+            <button
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              className="sm:hidden p-1.5 text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors duration-150 cursor-pointer"
+            >
+              {menuOpen ? (
+                // Icône X
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                // Icône hamburger
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Menu mobile déroulant */}
+        {menuOpen && (
+          <div className="sm:hidden border-t border-stone-100 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-2 flex flex-col gap-1">
+            {NAV_LINKS.map(({ to, label, end }) => (
+              <NavLink key={to} to={to} end={end} className={mobileNavLinkClass}>
+                {label}
+              </NavLink>
+            ))}
+            <div className="my-1 h-px bg-stone-100 dark:bg-stone-800" />
+            {userName && (
+              <span className="px-3 py-1 text-xs text-stone-400 dark:text-stone-500">{userName}</span>
+            )}
+            <button
+              onClick={logout}
+              className="px-3 py-2 text-sm font-medium text-left text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-md transition-colors duration-150 cursor-pointer"
             >
               Déconnexion
             </button>
           </div>
-        </div>
+        )}
       </header>
 
-      {/* Zone de contenu — Outlet rend la page correspondant à la route active */}
+      {/* Contenu de la page */}
       <main className="flex-1">
         <Outlet />
       </main>

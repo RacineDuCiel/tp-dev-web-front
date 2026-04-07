@@ -120,7 +120,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Prénom + Nom — champs obligatoires */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Prénom *</label>
               <input
@@ -144,7 +144,7 @@ export default function AuthorForm({ initial, onSubmit, onClose }: Props) {
           </div>
 
           {/* Nationalité + Date de naissance — champs optionnels */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Nationalité</label>
               <input

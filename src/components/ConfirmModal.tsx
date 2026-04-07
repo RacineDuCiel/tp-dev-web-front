@@ -63,7 +63,7 @@ export default function ConfirmModal({ title, message, onConfirm, onCancel, load
         <p id="confirm-desc" className="mt-2 text-sm text-stone-500 dark:text-stone-400">
           {message}
         </p>
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
           {/* Bouton Annuler — focus par défaut, action sûre */}
           <button
             ref={cancelRef}

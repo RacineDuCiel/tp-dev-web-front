@@ -136,7 +136,7 @@ export default function AuthorDetailPage() {
         </div>
 
         {/* Métadonnées — affichées uniquement si définies */}
-        <dl className="mt-4 flex flex-wrap gap-6">
+        <dl className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {author.nationality && (
             <div>
               <dt className="text-xs text-stone-400 dark:text-stone-500">Nationalité</dt>

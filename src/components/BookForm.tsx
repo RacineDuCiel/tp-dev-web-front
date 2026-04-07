@@ -168,7 +168,7 @@ export default function BookForm({ initial, onSubmit, onClose }: Props) {
           </div>
 
           {/* ISBN + Date publication — grille 2 colonnes */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">ISBN</label>
               <input
@@ -190,7 +190,7 @@ export default function BookForm({ initial, onSubmit, onClose }: Props) {
           </div>
 
           {/* Genre + Nombre de pages */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Genre</label>
               <select
@@ -240,7 +240,7 @@ export default function BookForm({ initial, onSubmit, onClose }: Props) {
             {authors.length === 0 ? (
               <p className="text-sm text-stone-400">Aucun auteur disponible — créez d'abord un auteur.</p>
             ) : (
-              <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto border border-stone-200 dark:border-stone-700 rounded-lg p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-40 overflow-y-auto border border-stone-200 dark:border-stone-700 rounded-lg p-3">
                 {authors.map(author => {
                   const selected = form.authorIds.includes(author.id);
                   return (

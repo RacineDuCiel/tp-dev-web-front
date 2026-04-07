@@ -46,7 +46,7 @@ export default function HomePage() {
     <div className="animate-page-in max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
 
       {/* Statistiques — 3 compteurs informatifs (non cliquables, la navbar suffit) */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Livres',        value: books.length },
           { label: 'Auteurs',       value: authors.length },

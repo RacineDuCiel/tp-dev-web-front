@@ -118,7 +118,7 @@ export default function BooksPage() {
     <div className="animate-page-in max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
       {/* En-tête : titre + compteur + bouton Nouveau livre */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-50">Livres</h1>
           <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500 mt-0.5">

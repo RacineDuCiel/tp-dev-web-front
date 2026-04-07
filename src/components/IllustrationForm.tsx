@@ -71,7 +71,7 @@ export default function IllustrationForm({ bookId, onSubmit }: Props) {
       <h4 className="text-sm font-medium text-stone-900 dark:text-stone-50 mb-4">Ajouter une illustration</h4>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Titre + Description — grille 2 colonnes */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Titre *</label>
             <input
