@@ -119,7 +119,7 @@ export default function AuthorsPage() {
         </div>
         <button
           onClick={() => { setEditTarget(undefined); setShowForm(true); }}
-          className="px-3 py-2 text-sm font-medium text-white bg-stone-900 dark:bg-stone-100 dark:bg-stone-800 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors duration-150"
+          className="px-3 py-2 text-sm font-medium text-white bg-stone-900 dark:bg-stone-100 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 cursor-pointer transition-colors duration-150"
         >
           Nouvel auteur
         </button>
@@ -137,7 +137,7 @@ export default function AuthorsPage() {
           {!searchQuery && (
             <button
               onClick={() => { setEditTarget(undefined); setShowForm(true); }}
-              className="mt-3 px-3 py-2 text-sm font-medium text-white bg-stone-900 dark:bg-stone-100 dark:bg-stone-800 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors duration-150"
+              className="mt-3 px-3 py-2 text-sm font-medium text-white bg-stone-900 dark:bg-stone-100 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 cursor-pointer transition-colors duration-150"
             >
               Nouvel auteur
             </button>
